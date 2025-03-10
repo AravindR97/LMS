@@ -6,6 +6,10 @@ from frappe.model.document import Document
 
 
 class LibraryMembership(Document):
+	def before_save(self):
+		membership_period = frappe.db.get_single_value("Library Settings", "membership_period")
+		self.to_date = frappe.utils.add_days(self.from_date, membership_period or 30)
+	
 	def before_submit(self):
 		exists = frappe.db.exists("Library Membership",
 							{
